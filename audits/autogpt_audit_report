@@ -42,8 +42,7 @@ if not execution_context.human_in_the_loop_safe_mode:
     logger.info(f"HITL block skipping review for node {node_exec_id} - safe mode disabled")
     yield "approved_data", input_data.data
     yield "review_message", "Auto-approved (safe mode disabled)"
-    return
-
+    return 
 What This Means:
 
 The HumanInTheLoopBlock checks a configuration flag called human_in_the_loop_safe_mode. When this flag is False (or not enabled), the block:
