@@ -1,0 +1,103 @@
+# Audit Report: [System Name]
+
+**Auditor:** Salman Atique  
+**Date:** [YYYY-MM-DD]  
+**Version:** 1.0
+
+---
+
+## Executive Summary
+
+[2-3 sentences describing key findings and recommendations]
+
+---
+
+## Scope
+
+| Item | Description |
+|------|-------------|
+| System | [Name] |
+| Version | [Version] |
+| Components | [List] |
+| Audit Type | Operational Governance Audit |
+
+---
+
+## Findings Summary
+
+| Severity | Count | Weighted Score |
+|----------|-------|----------------|
+| High (10x) | [#] | [# × 10 = ] |
+| Medium (3x) | [#] | [# × 3 = ] |
+| Low (1x) | [#] | [# × 1 = ] |
+| **Total** | **[#]** | **[Total Score]** |
+
+---
+
+## Detailed Findings
+
+### Finding 1: [Title]
+
+| Field | Value |
+|-------|-------|
+| **Severity** | High/Medium/Low (10x/3x/1x) |
+| **Location** | [File/function/API endpoint] |
+| **Status** | Open / Fixed / Mitigated |
+
+**Description:**  
+[What was found]
+
+**Evidence:**  
+[Code snippet, log excerpt, test result]
+
+**Recommendation:**  
+[What to fix]
+
+**Verification:**  
+[How to confirm fix]
+
+---
+
+### Finding 2: [Title]
+
+| Field | Value |
+|-------|-------|
+| **Severity** | High/Medium/Low (10x/3x/1x) |
+| **Location** | [File/function/API endpoint] |
+| **Status** | Open / Fixed / Mitigated |
+
+**Description:**  
+[What was found]
+
+**Evidence:**  
+[Code snippet, log excerpt, test result]
+
+**Recommendation:**  
+[What to fix]
+
+**Verification:**  
+[How to confirm fix]
+
+---
+
+## Methodology
+
+This audit used the Agentic AI Governance Audit Methodology including:
+
+- Static code analysis for authorization controls
+- Dynamic testing for HITL enforcement
+- Audit trace reconstruction
+- Severity-weighted findings (10x/3x/1x)
+
+---
+
+## Contact
+
+**Salman Atique**  
+Independent Researcher, AI Governance & Operational Risk  
+📧 salman.atique.qa@gmail.com  
+🌐 https://salmanatique.puter.site/
+
+---
+
+*Report generated using the Agentic AI Governance Audit Methodology*
