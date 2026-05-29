@@ -10,3 +10,55 @@
 
 **Description:**  
 Agent executed financial tooling without enforced approval validation. Code review revealed:
+
+require_approval: NOT FOUND
+human_in_the_loop: NOT FOUND
+check_permission: NOT FOUND
+
+
+**Impact:** Any developer adding a `transfer_money` tool creates immediate financial risk.
+
+**Recommendation:**  
+Implement mandatory approval gates for all financial operations. Add `require_approval=True` flag.
+
+---
+
+## Finding 2: Simulated HITL Without Execution Blocking
+
+| Field | Value |
+|-------|-------|
+| **Severity** | High (10x) |
+| **Location** | Healthcare claims workflow |
+| **Date** | April 2025 |
+
+**Description:**  
+Agent displayed "Waiting for human approval" but continued execution without blocking. Human review was never actually required — the approval prompt was simulated.
+
+**Impact:** False sense of safety. Critical decisions made without actual oversight.
+
+**Recommendation:**  
+Implement true blocking HITL where execution pauses until approval received. Remove simulated approval pathways.
+
+---
+
+## Finding 3: Context Blindness in Healthcare Claims
+
+| Field | Value |
+|-------|-------|
+| **Severity** | High (10x) |
+| **Location** | Claims processing AI (test phase) |
+| **Date** | February 2025 |
+
+**Description:**  
+Test-phase analysis of 856 claims revealed:
+- 12.3% overall error rate
+- 89% higher denial likelihood for cancer patients
+- 18.7% error rate for patients aged 65+
+- ~1 in 7 emergency cases mishandled
+
+The model treated all errors equally, failing to recognize emergency overrides and policy exceptions.
+
+**Impact:** Model not deployed. Would have caused patient harm.
+
+**Recommendation:**  
+Implement context-aware routing. Emergency cases require human review. Pre-deployment safety testing mandatory.
