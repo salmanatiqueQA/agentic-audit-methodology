@@ -1,0 +1,164 @@
+# AutoGPT Audit Report
+
+**Date:** May 30, 2026  
+**Method:** Static code analysis (Google Colab)  
+**Framework:** AutoGPT (autogpt_platform)  
+**Version:** Latest from GitHub (cloned May 29, 2026)
+
+---
+
+## Executive Summary
+
+This audit examined the AutoGPT platform's governance controls, specifically focusing on authorization, Human-in-the-Loop (HITL) enforcement, escalation handling, and logging.
+
+**Key Finding:** The HITL implementation contains a critical bypass. When `human_in_the_loop_safe_mode` is disabled, all HITL blocks auto-approve without any human review. This mirrors the simulated HITL pattern identified in earlier healthcare system audits.
+
+**Risk Severity:** HIGH (10x on severity scale)
+
+---
+
+## Audit Results Summary
+
+| Property | Status | Finding | Severity |
+|----------|--------|---------|----------|
+| Authorization | ⚠️ Partial | HITL requires safe mode flag; can be bypassed | HIGH |
+| HITL Enforcement | ❌ Weak | Auto-approval path exists when safe mode disabled | HIGH |
+| Escalation | ⏳ Not audited | Requires runtime testing | N/A |
+| Logging | ⏳ Not audited | Requires runtime testing | N/A |
+| Scope Boundaries | ⏳ Not audited | Requires runtime testing | N/A |
+
+---
+
+## Detailed Findings
+
+### Finding 1: HITL Safe Mode Bypass (HIGH Severity)
+
+**Location:** `blocks/human_in_the_loop.py`, lines 120-126
+
+**Code:**
+
+```python
+if not execution_context.human_in_the_loop_safe_mode:
+    logger.info(f"HITL block skipping review for node {node_exec_id} - safe mode disabled")
+    yield "approved_data", input_data.data
+    yield "review_message", "Auto-approved (safe mode disabled)"
+    return
+
+What This Means:
+
+The HumanInTheLoopBlock checks a configuration flag called human_in_the_loop_safe_mode. When this flag is False (or not enabled), the block:
+
+Logs that it is skipping review
+
+Automatically yields approved data
+
+Returns without waiting for any human input
+
+Risk:
+
+Organizations deploying AutoGPT may disable safe mode (for convenience, speed, or lack of awareness). This removes all human oversight from HITL blocks, allowing the agent to execute actions without approval.
+
+Real-World Parallel:
+
+This is identical to the simulated HITL finding in the healthcare multi-agent system audit: a claim of "human-in-the-loop" with no actual blocking mechanism.
+
+Finding 2: HITL Block Exists and Is Functional
+Location: blocks/human_in_the_loop.py, class HumanInTheLoopBlock
+
+Positive Finding:
+
+When safe mode is enabled, the HITL block correctly:
+
+Pauses execution (status = REVIEW)
+
+Waits for human approval or rejection
+
+Supports editable data (reviewer can modify before approval)
+
+Routes to approved_data or rejected_data output pins
+
+Documentation confirms:
+
+"When executed, this block creates a pending review entry and sets the node execution status to REVIEW. The execution remains paused until a human user either approves or rejects the data."
+
+Supporting Evidence
+Evidence 1: REVIEW Status Definition
+From copilot/tools/execution_utils.py, lines 24-28:
+
+python
+# Statuses where execution is paused but not finished (e.g. human-in-the-loop)
+PAUSED_STATUSES = frozenset(
+    {
+        ExecutionStatus.REVIEW,
+    }
+)
+Evidence 2: REVIEW Status Trigger
+From copilot/tools/run_agent.py:
+
+python
+elif completed and completed.status == ExecutionStatus.REVIEW:
+    return ExecutionStartedResponse(
+        message=(
+            f"Agent '{library_agent.name}' is awaiting human review. "
+            f"The user can approve or reject inline. After approval, "
+            f"the execution resumes automatically."
+        ),
+        status=ExecutionStatus.REVIEW.value,
+    )
+Methodology
+This audit used the agentic-audit-methodology checklist:
+
+Authorization: Searched for require_approval, human, approval keywords
+
+HITL Enforcement: Traced REVIEW status to HumanInTheLoopBlock
+
+Bypass Detection: Identified safe mode conditional logic
+
+Limitations: Static analysis only; runtime behavior not tested
+
+Recommendations
+For AutoGPT Developers
+Priority	Recommendation
+1	Remove or hard-enable safe mode. HITL should never be bypassable via configuration.
+2	Add explicit warnings when safe mode is disabled.
+3	Require multi-factor approval for high-severity actions.
+4	Log all HITL bypass events to an immutable audit trail.
+For Organizations Deploying AutoGPT
+Priority	Recommendation
+1	Verify human_in_the_loop_safe_mode is enabled in production.
+2	Test HITL blocks with a simple workflow before deployment.
+3	Monitor logs for "skipping review" messages.
+4	Treat HITL as a critical control, not a convenience feature.
+Limitations
+This audit was conducted via static code analysis in a Colab environment. The following were not tested:
+
+Runtime behavior with live API calls
+
+Actual human approval flow in production
+
+Escalation paths on timeout or error
+
+Audit logging completeness
+
+Scope boundary enforcement
+
+Replication encouraged. Runtime testing would strengthen these findings.
+
+References
+AutoGPT Repository: https://github.com/Significant-Gravitas/AutoGPT
+
+Audit Methodology: https://github.com/salmanatiqueQA/agentic-audit-methodology
+
+Severity Weighting Framework: 10x (HIGH), 3x (MEDIUM), 1x (LOW)
+
+Author
+Salman Atique – Operational Governance Researcher
+
+Research Portfolio
+
+GitHub
+
+LinkedIn
+
+License
+This audit report is licensed under MIT. Reuse and adaptation encouraged with attribution.
