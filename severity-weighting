@@ -1,0 +1,62 @@
+# Risk-Weighted Severity Framework
+
+## Overview
+
+Standard audit findings treat all issues equally. This framework weights findings by operational impact.
+
+---
+
+## Severity Tiers
+
+### High Risk (10x weight)
+
+**Definition:** Direct financial loss, patient harm, regulatory violation, rights infringement
+
+**Examples:**
+- Missing authorization in financial transactions
+- Simulated HITL without actual blocking
+- Context blindness causing denial of critical care
+- Unlogged approval overrides
+
+### Medium Risk (3x weight)
+
+**Definition:** Indirect harm, process delay, user confusion, compliance gaps
+
+**Examples:**
+- Incomplete audit logs
+- Unclear escalation pathways
+- Missing timeout handling
+- Ambiguous approval requirements
+
+### Low Risk (1x weight)
+
+**Definition:** Informational, cosmetic, no real-world impact
+
+**Examples:**
+- Minor documentation gaps
+- Stylistic inconsistencies
+- Low-severity informational errors
+
+---
+
+## Calculation Example
+
+| Finding | Count | Weight | Score |
+|---------|-------|--------|-------|
+| High-risk | 2 | ×10 | 20 |
+| Medium-risk | 3 | ×3 | 9 |
+| Low-risk | 5 | ×1 | 5 |
+| **Total** | 10 | | **34** |
+
+**Weighted Error Rate = 34 / Total decisions**
+
+---
+
+## Prioritization Matrix
+
+| Severity | Urgency | Action |
+|----------|---------|--------|
+| High + Production | Immediate | Block deployment |
+| High + Pre-deployment | Required | Fix before launch |
+| Medium + Production | 30 days | Schedule fix |
+| Low + Any | Backlog | Defer |
