@@ -1,0 +1,12 @@
+# Sample Audit Findings (Anonymized)
+
+## Finding 1: Missing Authorization in Financial Agent Workflow
+
+| Field | Value |
+|-------|-------|
+| **Severity** | High (10x) |
+| **Location** | `harness.py`, lines 140-145 |
+| **Date** | March 2025 |
+
+**Description:**  
+Agent executed financial tooling without enforced approval validation. Code review revealed:
